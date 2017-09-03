@@ -1,0 +1,73 @@
+﻿@model List<Gp.Web.Code.Entity.TradeInfo>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "交易列表";
+}
+
+<div class="container">
+    <h3 style="text-align:center">交割单</h3>
+    <div>
+        <div>
+            <label>总成交金额 : </label>
+            <label>@ViewBag.TaoalDealAmount</label>
+        </div>
+        <div>
+            <label>总收益 : </label>
+            <label>@ViewBag.TotalHappenAmount</label>
+        </div>
+        <div>
+            <label>总手续费 : </label>
+            <label>@ViewBag.TotalPoundage</label>
+        </div>
+        <div>
+            <label>总印花税 : </label>
+            <label>@ViewBag.TotalStamp_Tax</label>
+        </div>
+        <div>
+            <label>总其他杂费( 过户费 ) : </label>
+            <label>@ViewBag.TotalOther_Free</label>
+        </div>
+        <div>
+            <label>总成交次数 : </label>
+            <label>@ViewBag.TotalCount</label>
+        </div>
+    </div>
+    <table class="bordered striped highlight responsive-table">
+        <thead>
+            <tr>
+                <td>成交日期</td>
+                <td>证券代码</td>
+                <td>证券名称</td>
+                <td>操作</td>
+                <td>成交数量</td>
+                <td>成交均价</td>
+                <td>成交金额</td>
+                <td>发生金额</td>
+                <td>手续费</td>
+                <td>印花税</td>
+                <td>其他杂费</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DealDate.ToString("yyyy-MM-dd")</td>
+                    <td>@item.Code</td>
+                    <td>@item.Name</td>
+                    <td>@item.Operation</td>
+                    <td>@item.DealCount</td>
+                    <td>@item.DealAvgPrice</td>
+                    <td>@item.DealAmount</td>
+                    <td>@item.HappenAmount</td>
+                    <td>@item.Poundage</td>
+                    <td>@item.Stamp_Tax</td>
+                    <td>@item.Other_Free</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+

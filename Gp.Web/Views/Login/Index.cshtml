@@ -1,0 +1,48 @@
+﻿@model Gp.Web.Code.Entity.User
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+</head>
+<body>
+    @using(Ajax.BeginForm("Login", new AjaxOptions { OnSuccess = "onsuccess", OnFailure = "onfailuer" }))
+    {
+        <div>
+            <label>用户名</label>
+            <input type="text" name="UserName" />
+        </div>
+        <div>
+            <label>密码</label>
+            <input type="password" name="Pwd" />
+        </div>
+        <div>
+            <input id="LoginBtn" type="submit" class="btn btn-success" value="登录" />
+        </div>
+    }
+</body>
+</html>
+
+<script>
+    function onsuccess(result) {
+        result = JSON.parse(result)
+        if (result.status === 'ok') {
+            window.location.href = `/home`
+        } else {
+            alert(result.msg)
+        }
+    }
+
+    function onfailuer(data) {
+        alert(data)
+    }
+</script>
