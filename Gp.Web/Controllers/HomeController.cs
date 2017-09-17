@@ -26,29 +26,48 @@ namespace Gp.Web.Controllers
 
 
 
-        [ManagerAuthorize()]
-        public ActionResult TradeList()
+        //[ManagerAuthorize()]
+        public ActionResult GetTradeInfo(string startDate, string EndDate)
         {
-            var list = _TradeInfoDao.GetList_ByUserId(AdminManager.GetUser().UserId);
-            ViewBag.TaoalDealAmount = list.Sum(x => x.DealAmount);
-            ViewBag.TotalHappenAmount = list.Sum(x => x.HappenAmount);
-            ViewBag.TotalPoundage = list.Sum(x => x.Poundage);
-            ViewBag.TotalStamp_Tax = list.Sum(x => x.Stamp_Tax);
-            ViewBag.TotalOther_Free = list.Sum(x => x.Other_Free);
-            ViewBag.TotalCount = list.Count;
-            return View(list);
+            if(String.IsNullOrEmpty(startDate) || String.IsNullOrEmpty(EndDate))
+            {
+                var Date = DateTime.Now;
+                startDate = Date.ToString("yyyy-MM-01");
+                EndDate = Date.ToString("yyyy-MM-dd");
+            }
+
+            //时间范围的开始日期的卖出 不计算。 结束日期的买入 不计算
+            List<TradeInfo> list = _TradeInfoDao.GetList_ByUserIdAndDealDate(AdminManager.GetUser().UserId,startDate,EndDate).Where(x=>!((x.DealDate.ToString("yyyy-MM-dd") == startDate && x.Operation == "证券卖出") ||(x.DealDate.ToString("yyyy-MM-dd") == EndDate && x.Operation == "证券买入"))).ToList();
+
+
+            var resdata = new
+            {
+                TotalDealAmount = list.Sum(x => x.DealAmount).ToString("0.00"),  //总成交金额
+                TotalHappenAmount = list.Sum(x => x.HappenAmount).ToString("0.00"),  //总收益
+                TotalPoundage = list.Sum(x => x.Poundage).ToString("0.00"),  //总手续费
+                TotalStamp_Tax = list.Sum(x => x.Stamp_Tax).ToString("0.00"),  //总印花税
+                TotalOther_Free = list.Sum(x => x.Other_Free).ToString("0.00"),  //总其他杂费( 过户费 )
+                TotalCount = list.Count,  //总成次数
+                data = list.GroupBy(x=>x.Code).Select(x=>new
+                {
+                    InCome = x.Sum(s=>s.HappenAmount).ToString("0.00"),
+                    tradeList = x
+                })
+            };
+
+            return Content(JSONHelper.SerializeObject(new { status = "ok", msg = "ok", result = resdata }));
         }
 
 
 
 
 
-        [HttpGet]
-        [ManagerAuthorize]
-        public ActionResult AddTradInfo()
-        {
-            return View();
-        }
+        //[HttpGet]
+        //[ManagerAuthorize]
+        //public ActionResult AddTradInfo()
+        //{
+        //    return View();
+        //}
 
 
 

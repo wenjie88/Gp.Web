@@ -110,6 +110,8 @@
     <Content Include="Content\materialize\css\materialize.min.css" />
     <Content Include="Content\materialize\js\materialize.js" />
     <Content Include="Content\materialize\js\materialize.min.js" />
+    <Content Include="Content\mint-ui\index.min.css" />
+    <Content Include="Content\mint-ui\index.min.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Vue\vue.js" />
     <Content Include="Content\Vue\vue.min.js" />

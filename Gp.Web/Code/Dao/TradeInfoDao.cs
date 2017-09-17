@@ -16,16 +16,15 @@ namespace Gp.Web.Code.Dao
 
         public bool Add(TradeInfo info)
         {
-            return _Datebase.Execute("INSERT INTO tradeinfo(UserId, DealDate, Code, Name, DealCount, DealAvgPrice, DealAmount, HappenAmount, Poundage, Stamp_Tax, Operation) VALUES(@UserId, @DealDate, @Code, @Name, @DealCount, @DealAvgPrice, @DealAmount, @HappenAmount, @Poundage, @Stamp_Tax, @Operation)", info) > 0;
+            return _Datebase.Execute("INSERT INTO tradeinfo(UserId, DealDate, Code, Name, DealCount, DealAvgPrice, DealAmount, HappenAmount, Poundage, Stamp_Tax, Operation, Other_Free) VALUES(@UserId, @DealDate, @Code, @Name, @DealCount, @DealAvgPrice, @DealAmount, @HappenAmount, @Poundage, @Stamp_Tax, @Operation, @Other_Free)", info) > 0;
         }
 
+        
 
 
-
-
-        public List<TradeInfo> GetList_ByUserId(int UserId)
+        public List<TradeInfo> GetList_ByUserIdAndDealDate(int UserId,string StartDate, string EndDate)
         {
-            return _Datebase.Query<TradeInfo>("SELECT *FROM tradeinfo WHERE UserId = @UserId", new { UserId = UserId });
+            return _Datebase.Query<TradeInfo>("SELECT *FROM tradeinfo WHERE UserId = @UserId AND DealDate between @StartDate and @EndDate ORDER BY DealDate", new { UserId = UserId, StartDate = StartDate, EndDate= EndDate });
         }
 
     }

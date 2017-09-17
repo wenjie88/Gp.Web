@@ -20,10 +20,10 @@
       <publishTime>07/22/2016 14:52:40</publishTime>
     </File>
     <File Include="bin/Gp.Web.dll">
-      <publishTime>09/03/2017 19:20:33</publishTime>
+      <publishTime>09/16/2017 23:19:08</publishTime>
     </File>
     <File Include="bin/Gp.Web.pdb">
-      <publishTime>09/03/2017 19:20:33</publishTime>
+      <publishTime>09/16/2017 23:19:08</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>12/13/2016 03:10:32</publishTime>
@@ -193,6 +193,12 @@
     <File Include="Content/materialize/README.md">
       <publishTime>09/03/2017 18:21:27</publishTime>
     </File>
+    <File Include="Content/mint-ui/index.min.css">
+      <publishTime>09/13/2017 21:35:46</publishTime>
+    </File>
+    <File Include="Content/mint-ui/index.min.js">
+      <publishTime>09/13/2017 21:37:13</publishTime>
+    </File>
     <File Include="Content/Site.css">
       <publishTime>09/03/2017 11:01:58</publishTime>
     </File>
@@ -263,10 +269,10 @@
       <publishTime>09/03/2017 19:19:29</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>09/03/2017 19:07:42</publishTime>
+      <publishTime>09/16/2017 23:10:43</publishTime>
     </File>
     <File Include="Views/Home/TradeList.cshtml">
-      <publishTime>09/03/2017 19:43:09</publishTime>
+      <publishTime>09/13/2017 21:50:50</publishTime>
     </File>
     <File Include="Views/Login/Index.cshtml">
       <publishTime>09/03/2017 12:53:14</publishTime>
@@ -275,7 +281,7 @@
       <publishTime>09/03/2017 11:01:54</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>09/03/2017 19:06:13</publishTime>
+      <publishTime>09/16/2017 22:09:03</publishTime>
     </File>
     <File Include="Views/web.config">
       <publishTime>09/03/2017 11:01:58</publishTime>

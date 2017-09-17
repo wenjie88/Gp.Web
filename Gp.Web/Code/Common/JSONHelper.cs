@@ -9,7 +9,9 @@ namespace Gp.Web.Code.Common
     {
         public static string SerializeObject(object obj)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+            Newtonsoft.Json.Converters.IsoDateTimeConverter timeFormat = new Newtonsoft.Json.Converters.IsoDateTimeConverter();
+            timeFormat.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented, timeFormat);
         }
 
 
