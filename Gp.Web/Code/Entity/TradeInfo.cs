@@ -19,6 +19,9 @@ namespace Gp.Web.Code.Entity
         public double Poundage { get; set; }
         public double Stamp_Tax { get; set; }
         public double Other_Free { get; set; }
+        public double Yu { get; set; }
         public string Operation { get; set; }
+        public string TradeNum { get; set; }
+        
     }
 }
