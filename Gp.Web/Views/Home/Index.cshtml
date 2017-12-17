@@ -9,159 +9,218 @@
     }
 </style>
 
-<div id="app" style="font-family:'Microsoft YaHei';font-size:12px">
-    <mt-tab-container v-model="selected">
+<div id="app" style="position:absolute;top:0;bottom:0;left:0;right:0">
+    <el-row class="" style="height:98%">
+        <el-col :span="3">
+            <h5>默认颜色</h5>
+            <el-menu default-active="1"
+                     class=""
+                     @@open="handleOpen"
+                     @@close="handleClose"
+                     @@select="handleSelect">
+                <el-menu-item index="1">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">资产分析</span>
+                </el-menu-item>
+                <el-menu-item index="2">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">交割单导入</span>
+                </el-menu-item>
+                <el-menu-item index="3">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">交割单查询</span>
+                </el-menu-item>
+            </el-menu>
+        </el-col>
+        <el-col :span="21" style="height:100%">
+            <iframe id="fram" src="/info" style="width:100%;height:100%;border:none;"></iframe>
+        </el-col>
+    </el-row>
 
-        <!--交割单Tab-->
-        <mt-tab-container-item id="交割单">
-
-            <mt-field label="开始日期" placeholder="请输入开始日期" type="date" v-model="StartDate"></mt-field>
-            <mt-field label="结束日期" placeholder="请输入结束日期" type="date" v-model="EndDate"></mt-field>
-            <mt-button type="primary" size="small" v-on:click="GetData">查询</mt-button>
-
-            <div>
-                <div style="font-size:14px">
-                    <label>总收益 : </label>
-                    <label>{{TradeInfoList.TotalHappenAmount}}</label>
-                </div>
-                <div>
-                    <label>总成交金额 : </label>
-                    <label>{{TradeInfoList.TotalDealAmount}}</label>
-                </div>
-                <div>
-                    <label>总手续费 : </label>
-                    <label>{{TradeInfoList.TotalPoundage}}</label>
-                </div>
-                <div>
-                    <label>总印花税 : </label>
-                    <label>{{TradeInfoList.TotalStamp_Tax}}</label>
-                </div>
-                <div>
-                    <label>总其他杂费( 过户费 ) : </label>
-                    <label>{{TradeInfoList.TotalOther_Free}}</label>
-                </div>
-                <div>
-                    <label>总成交次数 : </label>
-                    <label>{{TradeInfoList.TotalCount}}</label>
-                </div>
-            </div>
-            <ul style="padding:0;list-style:none;">
-                <li v-for="Group in TradeInfoList.data" style="padding:20px 0; border-bottom:1px solid #eee">
-                    <div style="font-size:16px;font-weight:bold;padding:10px 0;">
-                        <span>{{Group.tradeList[0].Code}}</span>&nbsp;
-                        <span>{{Group.tradeList[0].Name}}</span>
-                    </div>
-                    <div v-for="item in Group.tradeList" style="font-size:14px;padding:5px 0">
-                        <span class="span-detail" style="width:25%">{{item.DealDate.substr(0,10)}}</span>
-                        <span class="span-detail" style="width:15%">{{item.DealAvgPrice}}</span>
-                        <span class="span-detail" style="width:15%">{{item.DealCount}}</span>
-                        <span class="span-detail" style="width:25%">{{item.HappenAmount}}</span>
-                        <span class="span-detail" v-if="item.Operation === '证券买入'" style="color:red;font-weight:bold;"><=</span>
-                        <span class="span-detail" v-else style="color:green;font-weight:bold;">=></span>
-                    </div>
-                    <div style="text-align:right;font-size:15px;font-weight:bold;margin-top:10px">
-                        <span v-if="Group.InCome > 0" style="color:red">{{Group.InCome}}</span>
-                        <span v-else style="color:green">{{Group.InCome}}</span>
-                    </div>
-                </li>
-            </ul>
-            
-            
-            <br />
-        </mt-tab-container-item>
-
-        <!--添加Tab-->
-        <mt-tab-container-item id="添加">
-            <mt-field label="证券代码"  v-model="AddTradeInfoModel.Code" placeholder="请输入证券代码"></mt-field>
-            <mt-field label="证券名称"  v-model="AddTradeInfoModel.Name" placeholder="请输入证券名称"></mt-field>
-            <mt-radio title="操作" v-model="AddTradeInfoModel.Operation" :options="['证券买入', '证券卖出']"></mt-radio>
-            <mt-field label="成交日期" v-model="AddTradeInfoModel.DealDate" type="date" placeholder="请输入成交日期"></mt-field>
-            <mt-field label="成交数量" v-model="AddTradeInfoModel.DealCount" type="number" placeholder="请输入成交数量"></mt-field>
-            <mt-field label="成交均价" v-model="AddTradeInfoModel.DealAvgPrice" type="number" placeholder="请输入成交均价"></mt-field>
-            <mt-button type="primary" v-on:click="AddTradeInfo">添加</mt-button>
-        </mt-tab-container-item>
-    </mt-tab-container>
-
-    <mt-tabbar v-model="selected" fixed="true">
-        <mt-tab-item id="交割单">
-            交割单
-        </mt-tab-item>
-        <mt-tab-item id="添加">
-            添加
-        </mt-tab-item>
-    </mt-tabbar>
 </div>
 
 <script>
     new Vue({
         el: "#app",
-        data: {
-            selected: "交割单",
-            StartDate: "",
-            EndDate: "",
-            TradeInfoList: {
-                data: [],
-                TotalDealAmount: '0.00',//总成交金额
-                TotalHappenAmount: '0.00',//总收益
-                TotalPoundage: '0.00',//总手续费
-                TotalStamp_Tax: '0.00',//总印花税
-                TotalOther_Free: '0.00',//总其他杂费( 过户费 )
-                TotalCount: 0,//总成交次数
-            },
-            AddTradeInfoModel: {
-                Code: "",
-                Name: "",
-                Operation: "证券买入",
-                DealDate: "",
-                DealCount: 0,
-                DealAvgPrice:0
-            }
-        },
-        mounted() {
-            this.GetData()
-        },
         methods: {
-            GetData() {
-                var start = this.StartDate
-                var End = this.EndDate
-                $.getJSON("/home/GetTradeInfo", { startDate: start, EndDate: End}, (respones) => {
-                    if (respones.status === 'ok') {
-                        this.TradeInfoList.data = respones.result.data
-                        this.TradeInfoList.TotalDealAmount = respones.result.TotalDealAmount
-                        this.TradeInfoList.TotalHappenAmount = respones.result.TotalHappenAmount
-                        this.TradeInfoList.TotalPoundage = respones.result.TotalPoundage
-                        this.TradeInfoList.TotalStamp_Tax = respones.result.TotalStamp_Tax
-                        this.TradeInfoList.TotalOther_Free = respones.result.TotalOther_Free
-                        this.TradeInfoList.TotalCount = respones.result.TotalCount
-                    }
-                })
+            handleOpen(key, keyPath) {
+                alert(key)
             },
-            AddTradeInfo() {
-                var info = this.AddTradeInfoModel
-                if (info.Code === '' || info.Name == '' || info.DealDate == '' || info.DealCount == 0 || info.DealAvgPrice == 0) {
-                    this.$toast({
-                        message: '操作失败, 内容不完整',
-                        //iconClass: 'icon icon-success'
-                    });
-                    return
+            handleClose(key, keyPath) {
+                alert(key)
+            },
+            handleSelect(key, keyPath) {
+                //alert(keyPath)
+                switch (key) {
+                    case "1":
+                        $('#fram').attr("src", '/info')
+                        break;
+                    case "2":
+                        $('#fram').attr("src", '/bill/Upload')
+                        break;
+                    case "3":
+                        $('#fram').attr("src", '/bill/')
+                        break;
+                    default:
+                        $('#fram').attr("src", '/bill/Error')
                 }
-
-                this.$indicator.open('添加中'); //
-
-                $.post("/home/AddTradeInfo", info, (respones) => {
-                    this.$indicator.close(); //
-                    respones = JSON.parse(respones)
-                    if (respones.status === 'ok') {
-                        this.$toast({
-                            message: '操作成功',
-                            //iconClass: 'icon icon-success'
-                        });
-                    } else {
-                        this.$toast(respones.msg);
-                    }
-                })
-            }
+            },
         }
     })
 </script>
 
+@*<div id="app" style="font-family:'Microsoft YaHei';font-size:12px">
+        <mt-tab-container v-model="selected">
+
+            <!--交割单Tab-->
+            <mt-tab-container-item id="交割单">
+
+                <mt-field label="开始日期" placeholder="请输入开始日期" type="date" v-model="StartDate"></mt-field>
+                <mt-field label="结束日期" placeholder="请输入结束日期" type="date" v-model="EndDate"></mt-field>
+                <mt-button type="primary" size="small" v-on:click="GetData">查询</mt-button>
+
+                <div>
+                    <div style="font-size:14px">
+                        <label>总收益 : </label>
+                        <label>{{TradeInfoList.TotalHappenAmount}}</label>
+                    </div>
+                    <div>
+                        <label>总成交金额 : </label>
+                        <label>{{TradeInfoList.TotalDealAmount}}</label>
+                    </div>
+                    <div>
+                        <label>总手续费 : </label>
+                        <label>{{TradeInfoList.TotalPoundage}}</label>
+                    </div>
+                    <div>
+                        <label>总印花税 : </label>
+                        <label>{{TradeInfoList.TotalStamp_Tax}}</label>
+                    </div>
+                    <div>
+                        <label>总其他杂费( 过户费 ) : </label>
+                        <label>{{TradeInfoList.TotalOther_Free}}</label>
+                    </div>
+                    <div>
+                        <label>总成交次数 : </label>
+                        <label>{{TradeInfoList.TotalCount}}</label>
+                    </div>
+                </div>
+                <ul style="padding:0;list-style:none;">
+                    <li v-for="Group in TradeInfoList.data" style="padding:20px 0; border-bottom:1px solid #eee">
+                        <div style="font-size:16px;font-weight:bold;padding:10px 0;">
+                            <span>{{Group.tradeList[0].Code}}</span>&nbsp;
+                            <span>{{Group.tradeList[0].Name}}</span>
+                        </div>
+                        <div v-for="item in Group.tradeList" style="font-size:14px;padding:5px 0">
+                            <span class="span-detail" style="width:25%">{{item.DealDate.substr(0,10)}}</span>
+                            <span class="span-detail" style="width:15%">{{item.DealAvgPrice}}</span>
+                            <span class="span-detail" style="width:15%">{{item.DealCount}}</span>
+                            <span class="span-detail" style="width:25%">{{item.HappenAmount}}</span>
+                            <span class="span-detail" v-if="item.Operation === '证券买入'" style="color:red;font-weight:bold;"><=</span>
+                            <span class="span-detail" v-else style="color:green;font-weight:bold;">=></span>
+                        </div>
+                        <div style="text-align:right;font-size:15px;font-weight:bold;margin-top:10px">
+                            <span v-if="Group.InCome > 0" style="color:red">{{Group.InCome}}</span>
+                            <span v-else style="color:green">{{Group.InCome}}</span>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <br />
+            </mt-tab-container-item>
+
+            <!--添加Tab-->
+            <mt-tab-container-item id="添加">
+                <mt-field label="证券代码"  v-model="AddTradeInfoModel.Code" placeholder="请输入证券代码"></mt-field>
+                <mt-field label="证券名称"  v-model="AddTradeInfoModel.Name" placeholder="请输入证券名称"></mt-field>
+                <mt-radio title="操作" v-model="AddTradeInfoModel.Operation" :options="['证券买入', '证券卖出']"></mt-radio>
+                <mt-field label="成交日期" v-model="AddTradeInfoModel.DealDate" type="date" placeholder="请输入成交日期"></mt-field>
+                <mt-field label="成交数量" v-model="AddTradeInfoModel.DealCount" type="number" placeholder="请输入成交数量"></mt-field>
+                <mt-field label="成交均价" v-model="AddTradeInfoModel.DealAvgPrice" type="number" placeholder="请输入成交均价"></mt-field>
+                <mt-button type="primary" v-on:click="AddTradeInfo">添加</mt-button>
+            </mt-tab-container-item>
+        </mt-tab-container>
+
+        <mt-tabbar v-model="selected" fixed="true">
+            <mt-tab-item id="交割单">
+                交割单
+            </mt-tab-item>
+            <mt-tab-item id="添加">
+                添加
+            </mt-tab-item>
+        </mt-tabbar>
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                selected: "交割单",
+                StartDate: "",
+                EndDate: "",
+                TradeInfoList: {
+                    data: [],
+                    TotalDealAmount: '0.00',//总成交金额
+                    TotalHappenAmount: '0.00',//总收益
+                    TotalPoundage: '0.00',//总手续费
+                    TotalStamp_Tax: '0.00',//总印花税
+                    TotalOther_Free: '0.00',//总其他杂费( 过户费 )
+                    TotalCount: 0,//总成交次数
+                },
+                AddTradeInfoModel: {
+                    Code: "",
+                    Name: "",
+                    Operation: "证券买入",
+                    DealDate: "",
+                    DealCount: 0,
+                    DealAvgPrice:0
+                }
+            },
+            mounted() {
+                this.GetData()
+            },
+            methods: {
+                GetData() {
+                    var start = this.StartDate
+                    var End = this.EndDate
+                    $.getJSON("/home/GetTradeInfo", { startDate: start, EndDate: End}, (respones) => {
+                        if (respones.status === 'ok') {
+                            this.TradeInfoList.data = respones.result.data
+                            this.TradeInfoList.TotalDealAmount = respones.result.TotalDealAmount
+                            this.TradeInfoList.TotalHappenAmount = respones.result.TotalHappenAmount
+                            this.TradeInfoList.TotalPoundage = respones.result.TotalPoundage
+                            this.TradeInfoList.TotalStamp_Tax = respones.result.TotalStamp_Tax
+                            this.TradeInfoList.TotalOther_Free = respones.result.TotalOther_Free
+                            this.TradeInfoList.TotalCount = respones.result.TotalCount
+                        }
+                    })
+                },
+                AddTradeInfo() {
+                    var info = this.AddTradeInfoModel
+                    if (info.Code === '' || info.Name == '' || info.DealDate == '' || info.DealCount == 0 || info.DealAvgPrice == 0) {
+                        this.$toast({
+                            message: '操作失败, 内容不完整',
+                            //iconClass: 'icon icon-success'
+                        });
+                        return
+                    }
+
+                    this.$indicator.open('添加中'); //
+
+                    $.post("/home/AddTradeInfo", info, (respones) => {
+                        this.$indicator.close(); //
+                        respones = JSON.parse(respones)
+                        if (respones.status === 'ok') {
+                            this.$toast({
+                                message: '操作成功',
+                                //iconClass: 'icon icon-success'
+                            });
+                        } else {
+                            this.$toast(respones.msg);
+                        }
+                    })
+                }
+            }
+        })
+    </script>*@

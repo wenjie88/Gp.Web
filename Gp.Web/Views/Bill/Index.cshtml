@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "交割单查询";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+    .green {
+        color: green;
+    }
+
+    .red {
+        color: red;
+    }
+</style>
+<div id="app" style="font-family:'microsoft yahei';font-size:12px">
+    <div class="">
+        <span class="demonstration">默认</span>
+        <el-date-picker v-model="DateRang"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <el-button type="primary" v-on:click="getdata">查询</el-button>
+    </div>
+
+    <el-table :data="tradeList"
+              style="width: 100%"
+              height="650"
+              :row-class-name="tableRowClassName">
+        <el-table-column prop="DealDate"
+                         label="成交日期"
+                         width="180"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="Code"
+                         label="证券代码"
+                         width="90"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="Name"
+                         label="证券名称"
+                         width="100"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="Operation"
+                         label="操作"
+                         width="100"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="DealCount"
+                         label="成交数量"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="DealAvgPrice"
+                         label="成交均价"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="DealAmount"
+                         label="成交金额"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="HappenAmount"
+                         label="发生金额"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="Yu"
+                         label="资金余额"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="Poundage"
+                         label="手续费"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="Stamp_Tax"
+                         label="印花税"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="Other_Free"
+                         label="其他杂费"
+                         width="100">
+        </el-table-column>
+
+
+</div>
+
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            result: {},
+            tradeList: [],
+            DateRang: []
+        },
+        mounted() {
+            this.getdata()
+        },
+        methods: {
+            getdata() {
+                var params = {};
+                if (this.DateRang.length > 0) {
+                    var StartTime = this.DateRang[0]
+                    var EndTime = this.DateRang[1]
+                    params["StartTime"] = StartTime
+                    params["EndTime"] = EndTime
+                } 
+
+                $.getJSON("/Bill/GetBill", params, (respones) => {
+                    if (respones.status === 'ok') {
+                        this.tradeList = respones.result.Data
+                    }
+                })
+
+            },
+            tableRowClassName({ row, rowIndex }) {
+                if (row.Operation === "证券卖出") {
+                    return 'green';
+                } else if (row.Operation === "证券买入") {
+                    return 'red';
+                }
+                return '';
+            }
+        }
+    })
+</script>

@@ -5,11 +5,13 @@
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
     <title>@ViewBag.Title</title>
-    <link href="~/Content/mint-ui/index.min.css" rel="stylesheet" />
+    @*<link href="~/Content/mint-ui/index.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Content/Vue/vue.min.js"></script>
-    <script src="~/Content/mint-ui/index.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    @*<script src="~/Content/mint-ui/index.min.js"></script>*@
 </head>
 <body>
     @RenderBody()

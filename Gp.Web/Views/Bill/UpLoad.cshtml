@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "信息导入";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="app">
+    <el-upload class="upload-demo"
+               action="/bill/upload"
+               multiple
+               :limit="10"
+               :on-exceed="handleExceed">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传xls文件，且不超过500kb</div>
+    </el-upload>
+</div>
+
+<script>
+    new Vue({
+        el:"#app",
+        methods: {
+            handleExceed(files, fileList) {// 超出文件数量提示
+                this.$message.warning('超出文件上传数量 !');
+            }
+        }
+    })
+</script>
+

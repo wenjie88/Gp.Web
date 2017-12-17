@@ -50,13 +50,22 @@ namespace Gp.Web.Code.Dao
 
 
 
-
-
-
-        public List<TradeInfo> GetList_ByUserIdAndDealDate(int UserId,string StartDate, string EndDate)
+        #region 获取数据
+        public List<TradeInfo> GetList_ByUserId(int UserId)
         {
-            return _Datebase.Query<TradeInfo>("SELECT *FROM tradeinfo WHERE UserId = @UserId AND DealDate between @StartDate and @EndDate ORDER BY DealDate", new { UserId = UserId, StartDate = StartDate, EndDate= EndDate });
+            return _Datebase.Query<TradeInfo>("SELECT *FROM tradeinfo WHERE UserId = @UserId ORDER BY DealDate", new { UserId = UserId});
         }
+
+
+
+        public List<TradeInfo> GetList_ByUserIdAndDealDate(int UserId, string StartDate, string EndDate)
+        {
+            return _Datebase.Query<TradeInfo>("SELECT *FROM tradeinfo WHERE UserId = @UserId AND DealDate between @StartDate and @EndDate ORDER BY DealDate", new { UserId = UserId, StartDate = StartDate, EndDate = EndDate });
+        }
+        #endregion
+
+
+
 
     }
 }
