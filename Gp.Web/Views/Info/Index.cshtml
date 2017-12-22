@@ -3,3 +3,96 @@
     ViewBag.Title = "资产分析";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<div id="app">
+    <div class="">
+        <span class="demonstration">默认</span>
+        <el-date-picker v-model="DateRang"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <el-button type="primary" v-on:click="getdata">查询</el-button>
+    </div>
+
+    <br />
+
+    <el-table :data="SumList"
+              style="width: 100%"
+              height="650">
+        <el-table-column prop="Code"
+                         label="证券代码"
+                         width="90"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="Name"
+                         label="证券名称"
+                         width="90"
+                         fixed>
+        </el-table-column>
+        <el-table-column prop="TotalBuyCount"
+                         label="总买入股数"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="TotalSellCount"
+                         label="总卖出股数"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="TotalHappenAmount"
+                         label="盈亏"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="TotalPoundage"
+                         label="手续费"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="TotalStamp_Tax"
+                         label="印花税"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="TotalOther_Free"
+                         label="其他杂费"
+                         width="100">
+        </el-table-column>
+        <el-table-column prop="TotalCount"
+                         label="总成交次数"
+                         width="100">
+        </el-table-column>
+    </el-table>
+
+</div>
+
+
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            SumList: [],
+            DateRang: []
+        },
+        mounted() {
+            this.getdata()
+        },
+        methods: {
+            getdata() {
+                var params = {};
+                if (this.DateRang.length > 0) {
+                    var StartTime = this.DateRang[0]
+                    var EndTime = this.DateRang[1]
+                    params["StartTime"] = StartTime
+                    params["EndTime"] = EndTime
+                }
+
+                $.getJSON("/info/GetInfo", params, (respones) => {
+                    if (respones.status === 'ok') {
+                        this.SumList = respones.result
+                        
+                    }
+                })
+
+            }
+        }
+    })
+</script>

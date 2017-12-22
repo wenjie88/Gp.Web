@@ -31,7 +31,7 @@ namespace Gp.Web.Controllers
         //
         public ActionResult GetBill(string StartTime, string EndTime)
         {
-            //时间范围的开始日期的卖出 不计算。 结束日期的买入 不计算
+            //
             List<TradeInfo> list = new List<TradeInfo>();
             if(String.IsNullOrEmpty(StartTime) || String.IsNullOrEmpty(EndTime))
             {
