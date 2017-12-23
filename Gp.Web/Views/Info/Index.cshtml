@@ -3,7 +3,8 @@
     ViewBag.Title = "资产分析";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script src="//unpkg.com/echarts/dist/echarts.min.js"></script>
+<script src="//unpkg.com/v-charts/lib/index.min.js"></script>
 <div id="app">
     <div class="">
         <span class="demonstration">默认</span>
@@ -12,55 +13,115 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd">
+                        value-format="yyyy-MM">
         </el-date-picker>
         <el-button type="primary" v-on:click="getdata">查询</el-button>
     </div>
 
     <br />
 
-    <el-table :data="SumList"
-              style="width: 100%"
-              height="650">
-        <el-table-column prop="Code"
-                         label="证券代码"
-                         width="90"
-                         fixed>
-        </el-table-column>
-        <el-table-column prop="Name"
-                         label="证券名称"
-                         width="90"
-                         fixed>
-        </el-table-column>
-        <el-table-column prop="TotalBuyCount"
-                         label="总买入股数"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="TotalSellCount"
-                         label="总卖出股数"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="TotalHappenAmount"
-                         label="盈亏"
-                         width="180">
-        </el-table-column>
-        <el-table-column prop="TotalPoundage"
-                         label="手续费"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="TotalStamp_Tax"
-                         label="印花税"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="TotalOther_Free"
-                         label="其他杂费"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="TotalCount"
-                         label="总成交次数"
-                         width="100">
-        </el-table-column>
-    </el-table>
+    <ve-histogram :data="chartData" :settings="chartSettings" :colors="colors" height="500px"></ve-histogram>
+
+    <br />
+
+    <el-row>
+        <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>完整交易收益排行</b>
+                </div>
+                <div v-for="item in MaxRang">
+                    <span v-text="item.Name"></span>
+                    <span v-text="item.TotalHappenAmount" style="float:right;color:red"></span>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>单只股票累计收益排行</b>
+                </div>
+                <div v-for="item in MaxRang">
+                    <span v-text="item.Name"></span>
+                    <span v-text="item.TotalHappenAmount" style="float:right;color:red"></span>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>完整交易亏损排行</b>
+                </div>
+                <div v-for="item in MinRang">
+                    <span v-text="item.Name"></span>
+                    <span v-text="item.TotalHappenAmount" style="float:right;color:green"></span>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>单只股票累计亏损排行</b>
+                </div>
+                <div v-for="item in MinRang">
+                    <span v-text="item.Name"></span>
+                    <span v-text="item.TotalHappenAmount" style="float:right;color:red"></span>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>成功率</b>
+                </div>
+                <div>
+                   <h1 v-text="SuccessRate*100 + '%'" style="text-align:center;color:red;"></h1>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+    @*<el-table :data="SumList"
+                  style="width: 100%"
+                  height="650">
+            <el-table-column prop="Code"
+                             label="证券代码"
+                             width="90"
+                             fixed>
+            </el-table-column>
+            <el-table-column prop="Name"
+                             label="证券名称"
+                             width="90"
+                             fixed>
+            </el-table-column>
+            <el-table-column prop="TotalBuyCount"
+                             label="总买入股数"
+                             width="100">
+            </el-table-column>
+            <el-table-column prop="TotalSellCount"
+                             label="总卖出股数"
+                             width="100">
+            </el-table-column>
+            <el-table-column prop="TotalHappenAmount"
+                             label="盈亏"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="TotalPoundage"
+                             label="手续费"
+                             width="100">
+            </el-table-column>
+            <el-table-column prop="TotalStamp_Tax"
+                             label="印花税"
+                             width="100">
+            </el-table-column>
+            <el-table-column prop="TotalOther_Free"
+                             label="其他杂费"
+                             width="100">
+            </el-table-column>
+            <el-table-column prop="TotalCount"
+                             label="总成交次数"
+                             width="100">
+            </el-table-column>
+        </el-table>*@
 
 </div>
 
@@ -69,8 +130,14 @@
     var app = new Vue({
         el: "#app",
         data: {
-            SumList: [],
-            DateRang: []
+            MaxRang: [],
+            MinRang: [],
+            SuccessRate:'',
+            result: [],
+            DateRang: [],
+            chartData: {},
+            chartSettings: {},
+            colors: []
         },
         mounted() {
             this.getdata()
@@ -78,7 +145,7 @@
         methods: {
             getdata() {
                 var params = {};
-                if (this.DateRang.length > 0) {
+                if (this.DateRang && this.DateRang.length > 0) {
                     var StartTime = this.DateRang[0]
                     var EndTime = this.DateRang[1]
                     params["StartTime"] = StartTime
@@ -87,8 +154,42 @@
 
                 $.getJSON("/info/GetInfo", params, (respones) => {
                     if (respones.status === 'ok') {
-                        this.SumList = respones.result
-                        
+
+                        this.MaxRang = respones.MaxRang
+                        this.MinRang = respones.MinRang
+                        this.SuccessRate = respones.SuccessRate
+
+                        var _rows = []
+                        var currentShouyi = 0
+                        respones.result.forEach((item) => {
+                            currentShouyi = Math.round((currentShouyi + item.MonthShouYi) * 100) / 100
+                            _rows.push({
+                                "月": item.Date,
+                                "收益": item.MonthShouYi,
+                                "累计收益": currentShouyi
+                            })
+                        })
+
+
+                        this.chartData = {
+                            columns: ['月', '收益', '累计收益'],
+                            rows: _rows
+                        }
+
+                        this.chartSettings = {
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+                            showLine: ['累计收益']
+                        }
+
+                        this.colors = ['#42b983', '#ff5757']
+
+
+
                     }
                 })
 
