@@ -81,6 +81,9 @@ namespace Gp.Web.Controllers
                     Date = group.Key,
                     MonthShouYi = Math.Round(AllSummary.Sum(x => x.TotalHappenAmount), 2, MidpointRounding.AwayFromZero),
                     MonthTradeCount = AllSummary.Count,
+                    MonthPoundage = Math.Round(AllSummary.Sum(x => x.TotalPoundage), 2, MidpointRounding.AwayFromZero),
+                    MonthStampTax = Math.Round(AllSummary.Sum(x => x.TotalStampTax), 2, MidpointRounding.AwayFromZero),
+                    MonthOtherFree = Math.Round(AllSummary.Sum(x => x.TotalOtherFree), 2, MidpointRounding.AwayFromZero),
                     DataList = AllSummary
                 });
 
@@ -105,15 +108,18 @@ namespace Gp.Web.Controllers
 
             var allSummaryList = MonthList.SelectMany(x => x.DataList);
 
+
             return Content(JSONHelper.SerializeObject(new
             {
                 status = "ok",
                 msg = "ok",
                 totalSouyi = Math.Round(MonthList.Sum(x => x.MonthShouYi), 2, MidpointRounding.AwayFromZero),
                 totalDeal = MonthList.Sum(x => x.MonthTradeCount),
-                MinRang = allSummaryList.OrderBy(x => x.TotalHappenAmount).Take(5),
-                MaxRang = allSummaryList.OrderByDescending(x => x.TotalHappenAmount).Take(5),
-                SigGpMaxRang = allSummaryList.GroupBy(x=>x.Code).Select(x=>x.Sum(y=>y.TotalHappenAmount)),
+                totalPoundage = Math.Round(MonthList.Sum(x => x.MonthPoundage), 2, MidpointRounding.AwayFromZero),
+                totalOtherFree = Math.Round(MonthList.Sum(x => x.MonthOtherFree), 2, MidpointRounding.AwayFromZero),
+                totalStampTax = Math.Round(MonthList.Sum(x => x.MonthStampTax), 2, MidpointRounding.AwayFromZero),
+                MinRang = allSummaryList.OrderBy(x => x.TotalHappenAmount).Take(10),
+                MaxRang = allSummaryList.OrderByDescending(x => x.TotalHappenAmount).Take(10),
                 SuccessRate = Math.Round(allSummaryList.Where(x => x.TotalHappenAmount > 0).Count() * 1.0 / allSummaryList.Count(), 4, MidpointRounding.AwayFromZero),
                 result = MonthList,
                 d = d
@@ -191,6 +197,9 @@ namespace Gp.Web.Controllers
             public double MonthShouYi { get; set; }
 
             public double MonthTradeCount { get; set; }
+            public double MonthPoundage { get; set; }
+            public double MonthStampTax { get; set; }
+            public double MonthOtherFree { get; set; }
 
             public List<Summary> DataList { get; set; }
         }

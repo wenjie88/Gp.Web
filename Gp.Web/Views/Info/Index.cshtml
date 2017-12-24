@@ -28,7 +28,7 @@
         <el-col :span="8">
             <el-card style="width:320px;">
                 <div slot="header">
-                    <b>完整交易收益排行</b>
+                    <b>交易收益排行</b>
                 </div>
                 <div v-for="item in MaxRang">
                     <span v-text="item.Name"></span>
@@ -37,6 +37,17 @@
             </el-card>
         </el-col>
         <el-col :span="8">
+            <el-card style="width:320px;">
+                <div slot="header">
+                    <b>交易亏损排行</b>
+                </div>
+                <div v-for="item in MinRang">
+                    <span v-text="item.Name"></span>
+                    <span v-text="item.TotalHappenAmount" style="float:right;color:green"></span>
+                </div>
+            </el-card>
+        </el-col>
+        @*<el-col :span="8">
             <el-card style="width:320px;">
                 <div slot="header">
                     <b>单只股票累计收益排行</b>
@@ -46,19 +57,8 @@
                     <span v-text="item.TotalHappenAmount" style="float:right;color:red"></span>
                 </div>
             </el-card>
-        </el-col>
-        <el-col :span="8">
-            <el-card style="width:320px;">
-                <div slot="header">
-                    <b>完整交易亏损排行</b>
-                </div>
-                <div v-for="item in MinRang">
-                    <span v-text="item.Name"></span>
-                    <span v-text="item.TotalHappenAmount" style="float:right;color:green"></span>
-                </div>
-            </el-card>
-        </el-col>
-        <el-col :span="8">
+        </el-col>*@
+        @*<el-col :span="8">
             <el-card style="width:320px;">
                 <div slot="header">
                     <b>单只股票累计亏损排行</b>
@@ -68,7 +68,7 @@
                     <span v-text="item.TotalHappenAmount" style="float:right;color:red"></span>
                 </div>
             </el-card>
-        </el-col>
+        </el-col>*@
         <el-col :span="8">
             <el-card style="width:320px;">
                 <div slot="header">
